@@ -43,9 +43,9 @@ permalink: /test/
             
             <form @submit.prevent="submitQuiz()">
                 <template x-for="(question, qIndex) in currentQuiz?.questions || []" :key="qIndex">
-                    <div class="question">
-                        <p x-text="`${qIndex + 1}. ${question.question}`"></p>
-                        <ul class="options">
+                    <fieldset class="question">
+                        <legend x-text="`${qIndex + 1}. ${question.question}`"></legend>
+                        <ul class="options" role="radiogroup" :aria-labelledby="`legend-${qIndex}`">
                             <template x-for="(option, oIndex) in question.options" :key="oIndex">
                                 <li>
                                     <label>
@@ -61,7 +61,7 @@ permalink: /test/
                                 </li>
                             </template>
                         </ul>
-                    </div>
+                    </fieldset>
                 </template>
                 
                 <div style="display: flex; gap: var(--space-md); justify-content: center;">
@@ -120,7 +120,8 @@ permalink: /test/
             
             <template x-for="(question, qIndex) in currentQuiz?.questions || []" :key="qIndex">
                 <div class="question-result" 
-                     :class="isCorrect(qIndex) ? 'correct' : 'incorrect'">
+                     :class="isCorrect(qIndex) ? 'correct' : 'incorrect'"
+                     aria-live="polite">
                     <p class="question-text" x-text="`${qIndex + 1}. ${question.question}`"></p>
                     <ul class="options-result">
                         <template x-for="(option, oIndex) in question.options" :key="oIndex">
