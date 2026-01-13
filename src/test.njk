@@ -1,0 +1,159 @@
+---
+layout: base.njk
+title: Тест (Гость)
+description: Проверьте свои знания по линейному программированию - интерактивные тесты по основным понятиям, симплекс-методу и двойственности
+includeAlpine: true
+permalink: /test/
+---
+
+<section class="content fade-in">
+    <h2>Тест для Гостя</h2>
+    
+    <div x-data="quizApp" x-init="init()">
+        <!-- Выбор темы теста -->
+        <div x-show="!currentTopic" id="test-container">
+            <h3>Выберите тему теста:</h3>
+            <ul class="topic-list">
+                <template x-for="(quiz, key) in quizData" :key="key">
+                    <li>
+                        <a href="#" 
+                           class="topic-link"
+                           @click.prevent="loadQuiz(key)"
+                           x-text="quiz.title">
+                        </a>
+                    </li>
+                </template>
+            </ul>
+        </div>
+        
+        <!-- Форма теста -->
+        <div x-show="currentTopic && !showResults" x-cloak>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl);">
+                <div>
+                    <h3 x-text="currentQuiz?.title" style="margin: 0 0 var(--space-sm) 0;"></h3>
+                    <p style="margin: 0; color: var(--color-gray-500); font-size: var(--font-size-sm);">
+                        <span x-text="`Уровень сложности: ${getDifficulty()}`"></span> • 
+                        <span x-text="`Вопросов: ${currentQuiz?.questions.length}`"></span>
+                    </p>
+                </div>
+                <button @click="resetQuiz()" class="btn btn-secondary" type="button">
+                    ← Назад к темам
+                </button>
+            </div>
+            
+            <form @submit.prevent="submitQuiz()">
+                <template x-for="(question, qIndex) in currentQuiz?.questions || []" :key="qIndex">
+                    <div class="question">
+                        <p x-text="`${qIndex + 1}. ${question.question}`"></p>
+                        <ul class="options">
+                            <template x-for="(option, oIndex) in question.options" :key="oIndex">
+                                <li>
+                                    <label>
+                                        <input 
+                                            type="radio" 
+                                            :name="`question${qIndex}`"
+                                            :value="oIndex"
+                                            @change="selectAnswer(qIndex, oIndex)"
+                                            :checked="userAnswers[qIndex] === oIndex"
+                                        >
+                                        <span x-text="option"></span>
+                                    </label>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+                
+                <div style="display: flex; gap: var(--space-md); justify-content: center;">
+                    <button 
+                        type="submit" 
+                        class="btn btn-primary"
+                        :disabled="!canSubmit()"
+                        :style="!canSubmit() ? 'opacity: 0.5; cursor: not-allowed;' : ''"
+                    >
+                        Завершить тест
+                    </button>
+                    <button 
+                        @click="resetQuiz()" 
+                        type="button"
+                        class="btn btn-secondary"
+                    >
+                        Отменить
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Результаты -->
+        <div x-show="showResults" id="result-container" x-cloak>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl);">
+                <div>
+                    <h2 style="margin: 0 0 var(--space-sm) 0;">Результаты теста</h2>
+                    <p style="margin: 0; color: var(--color-gray-500); font-size: var(--font-size-sm);">
+                        <span x-text="`⏱️ Время: ${formatTime(totalTime)}`"></span>
+                    </p>
+                </div>
+                <button @click="resetQuiz()" class="btn btn-secondary" type="button">
+                    ← Назад к темам
+                </button>
+            </div>
+            
+            <div class="final-score" :style="`background-color: ${getScoreStatus().color === 'color: var(--color-success);' ? 'var(--color-success-light)' : 'var(--color-error-light)'}`">
+                <p style="margin: 0; font-size: var(--font-size-xl);">
+                    <span :style="getScoreStatus().color" x-text="getScoreStatus().text"></span>
+                </p>
+                <p style="margin: var(--space-md) 0 0 0; font-size: var(--font-size-lg);">
+                    <strong x-text="score"></strong> из <strong x-text="currentQuiz?.questions.length"></strong> 
+                    (<span x-text="getPercentage()"></span>%)
+                </p>
+            </div>
+            
+            <div style="margin-top: var(--space-xl); display: flex; justify-content: center;">
+                <button 
+                    @click="toggleExplanations()" 
+                    class="btn btn-secondary"
+                    type="button"
+                >
+                    <span x-text="showExplanations ? '✓ Объяснения показаны' : 'Показать объяснения'"></span>
+                </button>
+            </div>
+            
+            <template x-for="(question, qIndex) in currentQuiz?.questions || []" :key="qIndex">
+                <div class="question-result" 
+                     :class="isCorrect(qIndex) ? 'correct' : 'incorrect'">
+                    <p class="question-text" x-text="`${qIndex + 1}. ${question.question}`"></p>
+                    <ul class="options-result">
+                        <template x-for="(option, oIndex) in question.options" :key="oIndex">
+                            <li :class="{
+                                'correct-answer': oIndex === question.correctAnswer,
+                                'user-answer': oIndex === userAnswers[qIndex] && !isCorrect(qIndex)
+                            }">
+                                <span x-text="option"></span>
+                            </li>
+                        </template>
+                    </ul>
+                    <div x-show="showExplanations" style="margin-top: var(--space-md); padding: var(--space-md); background-color: var(--color-gray-50); border-radius: var(--border-radius-md);">
+                        <p style="margin: 0; color: var(--color-gray-700); font-size: var(--font-size-sm); font-style: italic;">
+                            <strong>💡 Объяснение:</strong> <span x-text="question.explanation"></span>
+                        </p>
+                    </div>
+                </div>
+            </template>
+            
+            <div style="text-align: center; margin-top: var(--space-xl); display: flex; gap: var(--space-md); justify-content: center;">
+                <button @click="loadQuiz(currentTopic)" class="btn btn-primary" type="button">
+                    Пройти тест заново
+                </button>
+                <button @click="resetQuiz()" class="btn btn-secondary" type="button">
+                    Выбрать другой тест
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="/js/quiz.js"></script>
+
+<style>
+[x-cloak] { display: none !important; }
+</style>

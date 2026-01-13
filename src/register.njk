@@ -1,0 +1,105 @@
+---
+layout: base.njk
+title: Регистрация
+description: Зарегистрируйтесь для полного доступа к курсу линейного программирования
+permalink: /register/
+---
+
+<section class="content fade-in">
+    <h2 class="text-center">Регистрация нового пользователя</h2>
+    
+    <form id="registerForm" onsubmit="handleRegister(event)">
+        <div class="form-group">
+            <label for="username">Имя пользователя <span style="color: var(--color-error);">*</span></label>
+            <input 
+                type="text" 
+                id="username" 
+                name="username" 
+                placeholder="Введите имя пользователя"
+                required
+                minlength="3"
+                autocomplete="username"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email <span style="color: var(--color-error);">*</span></label>
+            <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                placeholder="your@email.com"
+                required
+                autocomplete="email"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="password">Пароль <span style="color: var(--color-error);">*</span></label>
+            <input 
+                type="password" 
+                id="password" 
+                name="password" 
+                placeholder="Минимум 6 символов"
+                required
+                minlength="6"
+                autocomplete="new-password"
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="passwordConfirm">Подтвердите пароль <span style="color: var(--color-error);">*</span></label>
+            <input 
+                type="password" 
+                id="passwordConfirm" 
+                name="passwordConfirm" 
+                placeholder="Повторите пароль"
+                required
+                minlength="6"
+                autocomplete="new-password"
+            >
+        </div>
+
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+    
+    <p class="text-center" style="margin-top: var(--space-lg);">
+        Уже зарегистрированы? <a href="/login/">Войти</a>
+    </p>
+    
+    <div id="register-message" style="display: none; margin-top: var(--space-lg); padding: var(--space-md); border-radius: var(--border-radius-md); text-align: center;"></div>
+</section>
+
+<script>
+function handleRegister(event) {
+    event.preventDefault();
+    
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('passwordConfirm').value;
+    const messageDiv = document.getElementById('register-message');
+    
+    // Проверка совпадения паролей
+    if (password !== passwordConfirm) {
+        messageDiv.style.display = 'block';
+        messageDiv.style.backgroundColor = 'var(--color-error-light)';
+        messageDiv.style.color = 'var(--color-error)';
+        messageDiv.innerHTML = '<strong>Ошибка:</strong> Пароли не совпадают!';
+        return;
+    }
+    
+    // Заглушка для демонстрации
+    messageDiv.style.display = 'block';
+    messageDiv.style.backgroundColor = 'var(--color-success-light)';
+    messageDiv.style.color = 'var(--color-success)';
+    messageDiv.innerHTML = `
+        <strong>Демо-режим</strong><br>
+        Функция регистрации находится в разработке.<br>
+        Пока вы можете использовать сайт как гость.
+    `;
+    
+    // Очистка формы
+    setTimeout(() => {
+        event.target.reset();
+    }, 2000);
+}
+</script>

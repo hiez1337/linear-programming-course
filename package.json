@@ -1,0 +1,21 @@
+{
+  "name": "linear-programming-course",
+  "version": "1.0.0",
+  "description": "Обучающий сайт по линейному программированию",
+  "scripts": {
+    "dev": "eleventy --serve --watch",
+    "build": "eleventy",
+    "start": "eleventy --serve",
+    "optimize-images": "node scripts/optimize-images.js"
+  },
+  "keywords": ["education", "linear-programming", "mathematics"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@11ty/eleventy": "^2.0.1",
+    "sharp": "^0.33.1"
+  },
+  "dependencies": {
+    "alpinejs": "^3.13.3"
+  }
+}

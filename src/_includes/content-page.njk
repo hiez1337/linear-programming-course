@@ -1,0 +1,23 @@
+---
+layout: base.njk
+includeMathJax: true
+---
+
+<div class="container fade-in">
+    <aside class="sidebar">
+        <h3>Содержание раздела</h3>
+        <nav class="sidebar-nav" aria-label="Навигация по разделам">
+            {% for item in sections %}
+            <a href="#{{ item.id }}">{{ item.title }}</a>
+            {% endfor %}
+        </nav>
+    </aside>
+    
+    <section class="content">
+        <div class="breadcrumbs">
+            <a href="/">Главная</a> » {{ breadcrumb }}
+        </div>
+        
+        {{ content | safe }}
+    </section>
+</div>

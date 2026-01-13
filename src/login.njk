@@ -1,0 +1,69 @@
+---
+layout: base.njk
+title: Вход
+description: Войдите в свой аккаунт для доступа к курсу линейного программирования
+permalink: /login/
+---
+
+<section class="content fade-in">
+    <h2 class="text-center">Вход в систему</h2>
+    
+    <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+            <label for="loginUsername">Имя пользователя или Email</label>
+            <input 
+                type="text" 
+                id="loginUsername" 
+                name="loginUsername" 
+                placeholder="Введите имя пользователя"
+                required
+                autocomplete="username"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="loginPassword">Пароль</label>
+            <input 
+                type="password" 
+                id="loginPassword" 
+                name="loginPassword" 
+                placeholder="Введите пароль"
+                required
+                autocomplete="current-password"
+            >
+        </div>
+
+        <button type="submit">Войти</button>
+    </form>
+    
+    <p class="text-center" style="margin-top: var(--space-lg);">
+        Нет аккаунта? <a href="/register/">Зарегистрироваться</a>
+    </p>
+    
+    <div id="login-message" style="display: none; margin-top: var(--space-lg); padding: var(--space-md); border-radius: var(--border-radius-md); text-align: center;"></div>
+</section>
+
+<script>
+function handleLogin(event) {
+    event.preventDefault();
+    
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+    const messageDiv = document.getElementById('login-message');
+    
+    // Заглушка для демонстрации
+    messageDiv.style.display = 'block';
+    messageDiv.style.backgroundColor = 'var(--color-primary-50)';
+    messageDiv.style.color = 'var(--color-primary-700)';
+    messageDiv.innerHTML = `
+        <strong>Демо-режим</strong><br>
+        Функция авторизации находится в разработке.<br>
+        Пока вы можете использовать сайт как гость.
+    `;
+    
+    // Очистка формы
+    setTimeout(() => {
+        event.target.reset();
+    }, 2000);
+}
+</script>
