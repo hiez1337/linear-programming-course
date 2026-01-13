@@ -2,6 +2,12 @@ const Image = require("@11ty/eleventy-img");
 const htmlmin = require("html-minifier-terser");
 
 module.exports = function(eleventyConfig) {
+  // Path prefix for GitHub Pages subdirectory deployment
+  const pathPrefix = process.env.ELEVENTY_PATH_PREFIX || "/";
+  
+  // Add global data for templates
+  eleventyConfig.addGlobalData("pathPrefix", pathPrefix);
+  
   // Копируем статические файлы
   eleventyConfig.addPassthroughCopy("src/assets");
   eleventyConfig.addPassthroughCopy("src/css");
@@ -61,6 +67,7 @@ module.exports = function(eleventyConfig) {
   });
   
   return {
+    pathPrefix: process.env.ELEVENTY_PATH_PREFIX || "/",
     dir: {
       input: "src",
       output: "dist",

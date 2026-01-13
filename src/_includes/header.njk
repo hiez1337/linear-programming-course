@@ -2,15 +2,15 @@
     <h1>Курс "Линейное программирование"</h1>
     <nav aria-label="Главное меню">
         <ul>
-            <li {{ page.url | isActive("/") | safe }}><a href="/">Главная</a></li>
-            <li {{ page.url | isActive("/basics/") | safe }}><a href="/basics/">Основные понятия</a></li>
-            <li {{ page.url | isActive("/simplex/") | safe }}><a href="/simplex/">Симплекс-метод</a></li>
-            <li {{ page.url | isActive("/duality/") | safe }}><a href="/duality/">Двойственность</a></li>
-            <li {{ page.url | isActive("/glossary/") | safe }}><a href="/glossary/">Глоссарий</a></li>
-            <li {{ page.url | isActive("/literature/") | safe }}><a href="/literature/">Литература</a></li>
-            <li {{ page.url | isActive("/test/") | safe }}><a href="/test/">Тест (Гость)</a></li>
-            <li {{ page.url | isActive("/register/") | safe }}><a href="/register/">Регистрация</a></li>
-            <li {{ page.url | isActive("/login/") | safe }}><a href="/login/">Вход</a></li>
+            <li {{ page.url | isActive("/") | safe }}><a href="{{ pathPrefix }}">Главная</a></li>
+            <li {{ page.url | isActive("/basics/") | safe }}><a href="{{ pathPrefix }}basics/">Основные понятия</a></li>
+            <li {{ page.url | isActive("/simplex/") | safe }}><a href="{{ pathPrefix }}simplex/">Симплекс-метод</a></li>
+            <li {{ page.url | isActive("/duality/") | safe }}><a href="{{ pathPrefix }}duality/">Двойственность</a></li>
+            <li {{ page.url | isActive("/glossary/") | safe }}><a href="{{ pathPrefix }}glossary/">Глоссарий</a></li>
+            <li {{ page.url | isActive("/literature/") | safe }}><a href="{{ pathPrefix }}literature/">Литература</a></li>
+            <li {{ page.url | isActive("/test/") | safe }}><a href="{{ pathPrefix }}test/">Тест (Гость)</a></li>
+            <li {{ page.url | isActive("/register/") | safe }}><a href="{{ pathPrefix }}register/">Регистрация</a></li>
+            <li {{ page.url | isActive("/login/") | safe }}><a href="{{ pathPrefix }}login/">Вход</a></li>
         </ul>
     </nav>
 </header>

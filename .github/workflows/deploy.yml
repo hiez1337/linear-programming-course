@@ -31,6 +31,8 @@ jobs:
 
       - name: Build with Eleventy
         run: npm run build
+        env:
+          ELEVENTY_PATH_PREFIX: /linear-programming-course/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
