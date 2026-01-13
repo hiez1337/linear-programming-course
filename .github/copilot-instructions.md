@@ -6,11 +6,11 @@ Educational website teaching linear programming concepts in Russian. Built with 
 ## Architecture & Structure
 
 ### Page Types
-- **Landing page**: [index.html](../index.html) - Hero section with CTAs and feature cards
-- **Content pages**: [basics.html](../basics.html), [simplex.html](../simplex.html), [duality.html](../duality.html) - Educational chapters with sidebar navigation
-- **Utility pages**: [glossary.html](../glossary.html), [literature.html](../literature.html) - Reference materials
-- **Interactive pages**: [test.html](../test.html) - Client-side quiz system with topic selection
-- **Auth pages**: [login.html](../login.html), [register.html](../register.html) - Basic forms (no backend yet)
+- **Landing page**: src/index.njk → route `/` (Hero + CTAs + features)
+- **Content pages**: src/basics.njk, src/simplex.njk, src/duality.njk – chapters with sidebar
+- **Utility pages**: src/glossary.njk, src/literature.njk – reference materials
+- **Interactive pages**: src/test.njk – client-side quiz (Alpine.js)
+- **Auth pages**: src/login.njk, src/register.njk – forms (no backend)
 
 ### Template System (Nunjucks)
 **Shared components** are in `src/_includes/`:
@@ -55,39 +55,31 @@ permalink: /custom-url/ # Optional custom URL
 - Complex multi-line equations use `$$\begin{aligned}...\end{aligned}$$`
 
 ### CSS & Styling
-- Single stylesheet: [style.css](../style.css) - All pages link to it
-- **Layout pattern for content pages**: Flexbox-based `.container` with `.sidebar` + `.content`
-- Sidebar width: 250px fixed, sticky positioning, contains section navigation (`<aside class="sidebar">`)
-- Content area: `.content` class, grows to fill remaining space
-- Responsive: `@media (max-width: 992px)` switches to vertical stack
-- Color scheme: Bootstrap-inspired - primary `#007bff`, dark gray `#343a40`, light bg `#f8f9fa`
+- Single stylesheet: src/css/style.css (design system)
+- **Dark Manga Aesthetic**: deep dark bg `#0a0a0a`, crimson `#d41159`, gold `#ffd700`, purple accents
+- **Layout pattern**: Flexbox `.container` with sticky `.sidebar` (250px) + fluid `.content`
+- **Hero/CTA**: gradient backgrounds, red glow borders, diagonal overlay; responsive tweaks on mobile
+- **Responsive**: Mobile-first; stacked layout ≤768px; tables scroll horizontally; reduced ornamental overlays
 
-### JavaScript Pa (Design System)
-- Single stylesheet: [src/css/style.css](../src/css/style.css)
-- **CSS Custom Properties** - All design tokens in `:root` for easy theming
-  - Colors: `--color-primary-500`, `--color-success`, `--color-error`, etc.
-  - Spacing: `--space-xs` (4px) through `--space-3xl` (64px)
-  - Typography: `--font-size-base`, `--font-weight-bold`, etc.
-  - Shadows: `--shadow-sm`, `--shadow-md`, `--shadow-lg`
-  - Transitions: `--transition-base` (300ms ease)
-
-- **Alpine.js** for reactive components (quiz system)
-- Quiz logic in [src/js/quiz.js](../src/js/quiz.js) using `Alpine.data('quizApp')`
-- Quiz data in JSON: [src/js/quiz-data.json](../src/js/quiz-data.json)
-- State management via Alpine reactive properties: `currentTopic`, `userAnswers`, `showResults`
-- Form validation in login/register pages (vanilla JS, placeholder until backend)
-- **No jQuery** - Pure vanilla JS or Alpine.js only, `.sr-only
-- Educational pages use ID-based section anchors (`#section1_1`, `#section1_2`) linked from sidebar
-- Breadcrumbs on content pages: `<div class="breadcrumbs"><a href="index.html">Главная</a> » Page Title</div>`
-- Images stored in `assets/` folder (PNG diagrams with Russian filenames)
+### Design System & JS
+- **CSS Custom Properties** (in `:root`):
+  - Colors: `--color-bg-dark`, `--color-accent-red`, `--color-accent-gold`, `--color-accent-purple`, gray scale
+  - Spacing: `--space-xs` … `--space-3xl`
+  - Typography: fonts (Noto Sans JP, IBM Plex Mono), sizes `--font-size-*`, weights
+  - Shadows: red glow `--shadow-sm|md|lg|xl`
+  - Transitions: `--transition-base`, `--transition-smooth`
+- **Alpine.js**: quiz in src/js/quiz.js via `Alpine.data('quizApp')`; data in src/js/quiz-data.json
+- **Navigation**: ID-based anchors (e.g., `#section1_1`) generated via `sections` in front matter; breadcrumbs in content layout
+- **No jQuery**: vanilla JS + Alpine only; accessibility utilities include `.sr-only`
+- **Images**: prefer WebP under `/assets/images/*.webp`; originals (PNG) kept as fallback
 
 ## Development Workflow
-- **Build system**: Eleventy SSG (`npm run dev` for development, `npm run build` for production)
-- **Source files**: All in `src/` directory (Nunjucks templates `.njk`)
-- **Output**: Generated to `dist/` directory
-- **Language**: All content in Russian (comments, text, filenames)
-- **Hot reload**: Automatic browser refresh on file changes
-- **Testing**: Navigate to `/test/` route to verify quiz functionality
+- **Build**: Eleventy SSG (`npm run dev` for development, `npm run build` for production)
+- **Source**: `src/` (Nunjucks `.njk`, CSS, JS, assets)
+- **Output**: `dist/`
+- **Passthrough**: `.eleventy.js` passes `src/assets`, `src/css`, `src/js`
+- **Language**: Russian content and comments
+- **Hot reload**: Auto browser refresh; test quiz via `/test/`
 
 ### Key Commands
 ```bash
@@ -105,19 +97,24 @@ npm run optimize-images  # Convert PNG to WebP
 ---
 layout: content-page.njk
 title: Page Title
-breadcrumb: Breadcrumb T & Best Practices
-- **No backend (yet)** - Login/register are placeholders, all quiz data client-side
-- **Accessibility**: 
-  - Russian `<html lang="ru">` in base template
-  - ARIA labels on navigation (`aria-label="Главное меню"`)
-  - Focus states on interactive elements
-  - Semantic HTML5 (`<header>`, `<nav>`, `<main>`, `<section>`, `<aside>`)
-- **Mobile-first**: Test at 992px breakpoint - sidebar stacks vertically
-- **Performance**: 
-  - Images optimized to WebP with `npm run optimize-images`
-  - MathJax/Alpine.js only loaded when needed (conditional in front matter)
-- **SEO**: Each page must have unique `title` and `description` in front matter
-- **Math notation**: Keep LaTeX consistent - use `$...$` inline, `$$...$$` display
+description: SEO description
+breadcrumb: Breadcrumb Title
+includeMathJax: true   # if page has math
+includeAlpine: false   # enable if interactive JS is needed
+---
+```
+2. Add `sections:` array for sidebar navigation:
+```njk
+sections:
+  - id: sectionX_1
+    title: 1. Раздел
+  - id: sectionX_2
+    title: 2. Раздел
+```
+3. Link in `src/_includes/header.njk` if needed; Eleventy generates `/pagename/` automatically.
+4. Accessibility: ARIA labels, focus states, semantic HTML.
+5. Performance: prefer WebP images in `/assets/images/`; optimize via `npm run optimize-images`.
+6. MathJax/Alpine only when needed (controlled via front matter).
 
 ## File Structure
 ```
@@ -137,12 +134,12 @@ project-root/
 │   ├── js/
 │   │   ├── quiz.js            # Alpine.js quiz component
 │   │   └── quiz-data.json     # Quiz topics/questions
-│   ├── assets/images/          # Optimized WebP images
+│   ├── assets/images/          # Optimized WebP images (and PNG fallbacks)
 │   ├── index.njk              # Homepage ✅
 │   ├── test.njk               # Quiz page ✅
 │   ├── login.njk              # Login form ✅
 │   ├── register.njk           # Registration form ✅
-│   └── [basics|simplex|duality|glossary|literature].njk  # ⏳ TODO
+│   └── [basics|simplex|duality|glossary|literature].njk  # All pages migrated ✅
 ├── dist/                       # Generated site (gitignored)
 ├── scripts/
 │   └── optimize-images.js     # PNG→WebP converter
@@ -164,30 +161,18 @@ project-root/
 ## Migration Status
 
 **Completed (✅):**
-- Infrastructure setup (package.json, .eleventy.js, scripts)
-- CSS design system with tokens
-- Template architecture (layouts, components)
-- Quiz refactored to Alpine.js with JSON data
-- Homepage, test page, login/register forms converted to .njk
-- Documentation (START.md, SETUP.md, copilot-instructions.md)
-
-**Pending (⏳):**
-- Convert remaining HTML pages to .njk:
-  - basics.html → src/basics.njk (with content-page.njk layout)
-  - simplex.html → src/simplex.njk
-  - duality.html → src/duality.njk
-  - glossary.html → src/glossary.njk
-  - literature.html → src/literature.njk
-- Run `npm run optimize-images` to convert 7 PNG files to WebP
-- Test all pages in browser after `npm run dev`
-- Delete old HTML files after successful migration
+- All pages migrated to `.njk` (basics, simplex, duality, glossary, literature)
+- Dark Manga Aesthetic redesign in `src/css/style.css` (colors, typography, hero/CTA, animations)
+- Quiz expanded and fully styled (Alpine.js + JSON)
+- Images optimized to WebP in `src/assets/images/`; originals retained as fallback
+- Old root HTML and legacy `style.css` removed from active use
+- Documentation updated; Eleventy passthrough configured
 
 **Next Steps:**
-1. User runs `npm install` to get dependencies
-2. User runs `npm run dev` to test current setup
-3. Agent helps migrate remaining content pages to .njk format
-4. Run image optimization script
-5. Review and iterate on design/functionality
+1. `npm install` (once per setup)
+2. `npm run dev` to iterate; verify all routes and responsive styles
+3. Use WebP for new images; run `npm run optimize-images` when adding PNG/JPG
+4. Keep MathJax/Alpine conditional for performance
 
 ---
 <h2>Chapter 1. Title</h2>

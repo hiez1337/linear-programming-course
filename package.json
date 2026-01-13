@@ -8,11 +8,17 @@
     "start": "eleventy --serve",
     "optimize-images": "node scripts/optimize-images.js"
   },
-  "keywords": ["education", "linear-programming", "mathematics"],
+  "keywords": [
+    "education",
+    "linear-programming",
+    "mathematics"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1",
+    "@11ty/eleventy-img": "^6.0.4",
+    "html-minifier-terser": "^7.2.0",
     "sharp": "^0.33.1"
   },
   "dependencies": {

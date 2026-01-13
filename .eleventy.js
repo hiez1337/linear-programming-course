@@ -42,7 +42,7 @@ module.exports = function(eleventyConfig) {
           collapseWhitespace: true,
           removeComments: true,
           minifyCSS: true,
-          minifyJS: true,
+          minifyJS: false, // Disabled - breaks MathJax config
           // Ignore math fragments to avoid parser confusion
           ignoreCustomFragments: [/\$\$[\s\S]*?\$\$/g, /\$[^$]*\$/g],
         });
