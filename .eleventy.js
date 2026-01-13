@@ -24,7 +24,7 @@ module.exports = function(eleventyConfig) {
       widths: [600, 900, 1200],
       formats: ["avif", "webp", "jpeg"],
       outputDir: "./dist/img/",
-      urlPath: "/img/",
+      urlPath: `${pathPrefix}img/`,
     });
 
     const imageAttributes = {
